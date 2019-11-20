@@ -1,0 +1,16 @@
+<p>hero-detail works!</p>
+
+<p>
+  {{ id }}
+</p>
+
+
+<a [routerLink]="['/hero', id + 1]">
+  Next Hero
+</a>
+
+<br>
+
+<a (click)="goBack()">
+  Go Back
+</a>

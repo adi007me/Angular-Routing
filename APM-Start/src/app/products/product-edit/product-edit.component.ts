@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 
 import { MessageService } from '../../messages/message.service';
 
@@ -10,11 +10,12 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './product-edit.component.html',
   styleUrls: ['./product-edit.component.css']
 })
-export class ProductEditComponent implements OnInit {
+export class ProductEditComponent implements OnInit, OnChanges {
   pageTitle = 'Product Edit';
   errorMessage: string;
 
   product: Product;
+  private dataIsValid: { [key: string]: boolean } = {};
 
   constructor(private productService: ProductService,
               private messageService: MessageService,
@@ -25,6 +26,9 @@ export class ProductEditComponent implements OnInit {
 
     // this.getProduct(id);
 
+    console.log('ngOnInit called - Product-Edit-Component');
+
+
     this.route.data.subscribe(data => {
       const resolvedData : ProductResolved = data['resolvedData'];
 
@@ -32,10 +36,13 @@ export class ProductEditComponent implements OnInit {
       this.onProductRetrieved(resolvedData.product);
     });
 
-
     // this.route.paramMap.subscribe(params => {
     //   this.getProduct(+params.get('id'));
     // })
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('ngOnChanges called - Product-Edit-Component', changes);
   }
 
   getProduct(id: number): void {
@@ -97,5 +104,21 @@ export class ProductEditComponent implements OnInit {
     }
 
     // Navigate back to the product list
+  }
+
+  validate(): void {
+    this.dataIsValid = {};
+
+    if (this.product.productName && this.product.productCode) {
+      this.dataIsValid['info'] = true;
+    } else {
+      this.dataIsValid['info'] = false;
+    }
+
+    if (this.product.category && this.product.category.length > 3) {
+      this.dataIsValid['tags'] = true;
+    } else {
+      this.dataIsValid['tags'] = false;
+    }
   }
 }
